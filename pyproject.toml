@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "dungeonsnpipes"
+version = "0.1.0"
+description = "A data pipeline application for D&D api"
+authors = ["Vitor Roque <vitor.roquep@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^6.0.0"
+pytest-mock = "*"
+requests-mock = "^1.12.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
