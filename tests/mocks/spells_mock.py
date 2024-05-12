@@ -1,6 +1,6 @@
 import json
 
-def get_spell_index():
+def get_spell_index() -> str:
   return json.dumps({
     "index": "acid-arrow",
     "name": "Acid Arrow",
@@ -64,10 +64,10 @@ def get_spell_index():
         "url": "/api/subclasses/land"
       }
     ],
-    "url": "/api/spells/acid-arrow"                    
+    "url": "/api/spells/acid-arrow"
   })
 
-def get_spells_mock():
+def get_spells_mock() -> str:
     return json.dumps({
         'count': 2,
         'results': [
@@ -86,7 +86,7 @@ def get_spells_mock():
         ]
     })
 
-def get_spells_for_batch_mock():
+def get_spells_for_batch_mock() -> str:
     return json.dumps({
         'count': 15,
         'results': [
