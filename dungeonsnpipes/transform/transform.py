@@ -7,7 +7,7 @@ class SpellBatch:
     MAX_SIZE = 10
 
     def __init__(self) -> None:
-        self.spells: SpellResponse = []
+        self.spells: list[SpellResponse] = []
 
 
 def turn_into_batches(response: SpellResponse) -> list[SpellBatch]:
@@ -29,14 +29,21 @@ def turn_into_batches(response: SpellResponse) -> list[SpellBatch]:
 
 def transform_description(batch: SpellBatch) -> list:
     spell_resources = []
-    s = batch.spells[0]
     for spell in batch.spells:
-        api_spell = get_api_spell_index(spell['index'])
-        resource = {}
-        resource['description'] = '\n'.join(api_spell['desc'])
-        resource['higher_level'] = '\n'.join(api_spell['higher_level'])
-        spell_resources.append(resource)
+        try:
+            api_spell = get_api_spell_index(spell['index'])
+            resource = {}
+            resource['description'] = '\n'.join(api_spell['desc'])
+            resource['higher_level'] = '\n'.join(api_spell['higher_level'])
+            spell_resources.append(resource)
+        except:
+            raise Exception("Request goes wrong")
 
+    return spell_resources
+
+
+def transform_range(batch: SpellBatch) -> list:
+    spell_resources = []
     return spell_resources
 
 
