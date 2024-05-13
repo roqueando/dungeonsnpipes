@@ -2,6 +2,8 @@ from dungeonsnpipes.extract.api_extractor import SpellResponse, get_api_spell_in
 from multiprocessing import Process
 import math
 
+FEET_CONSTANT = 3.2808
+SQUARE_METERS = 1.5
 
 class SpellBatch:
     MAX_SIZE = 10
@@ -32,9 +34,11 @@ def transform_description(batch: SpellBatch) -> list:
     for spell in batch.spells:
         try:
             api_spell = get_api_spell_index(spell['index'])
-            resource = {}
+            resource = {**api_spell}
             resource['description'] = '\n'.join(api_spell['desc'])
-            resource['higher_level'] = '\n'.join(api_spell['higher_level'])
+            resource['higher_level_description'] = '\n'.join(api_spell['higher_level'])
+            del resource['desc']
+            del resource['higher_level']
             spell_resources.append(resource)
         except:
             raise Exception("Request goes wrong")
@@ -42,10 +46,14 @@ def transform_description(batch: SpellBatch) -> list:
     return spell_resources
 
 
-def transform_range(batch: SpellBatch) -> list:
-    spell_resources = []
-    return spell_resources
+def transform_range(batch: list) -> list:
+    return list(map(_calculate_range, batch))
 
+def _calculate_range(spell: dict) -> dict:
+    meters = round(int(spell['range'].split(' ')[0]) / FEET_CONSTANT, 2)
+    spell['squares'] = math.floor(meters / SQUARE_METERS)
+    del spell['range']
+    return spell
 
 def run_batches(batches: list[SpellBatch]):
     processes = []

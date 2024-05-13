@@ -19,8 +19,14 @@ def test_turning_into_batches(monkeypatch):
     assert len(first_batch.spells) == 10
     assert len(second_batch.spells) == 5
 
+def should_description_be_transformed(batch):
+    assert batch['description'] == "A simple description\nMore description"
+    assert batch['higher_level_description'] == "Higher level description\nMore description"
 
-def test_all_transformation(monkeypatch):
+def should_range_be_transformed(batch):
+    assert batch['squares'] == 18
+
+def test_transformation(monkeypatch):
     monkeypatch.setattr(requests, "get", request_mock.mock_get_spell_index)
     spells = __create_spell_response()
 
@@ -28,15 +34,11 @@ def test_all_transformation(monkeypatch):
     solved_batches = []
     for batch in batches:
         result = transform.transform_description(batch)
+        result = transform.transform_range(result)
         solved_batches.append(result)
 
     first_result = solved_batches[0][0]
-
-    def it_should_test_description_transform():
-        assert first_result['description'] == "A simple description\nMore description"
-        assert first_result['higher_level'] == "Higher level description\nMore description"
-
-    it_should_test_description_transform()
+    should_description_be_transformed(solved_batches[0][0])
 
 
 def __create_spell_response() -> SpellResponse:
