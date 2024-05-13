@@ -1,8 +1,17 @@
-from dungeonsnpipes.extract.api_extractor import get_spells_from_api, DND_API_BASE_URL
+import dungeonsnpipes.extract.api_extractor as api_extractor
+import tests.mocks.request_mock as request_mock
+import requests
 
-from tests.mocks.spells_mock import get_spells_mock
 
-def test_api_extractor_get_spells_from_api(requests_mock):
-    requests_mock.get(f'{DND_API_BASE_URL}/spells', status_code=200, text=get_spells_mock())
-    response = get_spells_from_api()
+def test_api_extractor_get_spells_from_api(monkeypatch):
+    monkeypatch.setattr(requests, "get", request_mock.mock_get_spells)
+    response = api_extractor.get_spells_from_api()
     assert response.count > 0
+
+
+def test_get_spells_from_index(monkeypatch):
+    monkeypatch.setattr(requests, "get", request_mock.mock_get_spell_index)
+    response = api_extractor.get_api_spell_index('acid-arrow')
+
+    assert response['desc'][0] == 'A simple description'
+    assert response['range'] == '90 feet'
