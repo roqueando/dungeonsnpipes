@@ -45,9 +45,31 @@ def transform_description(batch: SpellBatch) -> list:
 
     return spell_resources
 
-
 def transform_range(batch: list) -> list:
     return list(map(_calculate_range, batch))
+
+def transform_components(batch: list) -> list:
+    return list(map(_concat_components, batch))
+
+def transform_damage(batch: list) -> list:
+    return list(map(_flatten_damage, batch))
+
+def total_damage(value: str) -> int:
+    multi, dice = value.split("d")
+    return int(multi) * int(dice)
+
+def _flatten_damage(spell: dict) -> dict:
+    level = spell['level']
+    damage_type = spell['damage']['damage_type']['name']
+    dice = spell['damage']['damage_at_slot_level'][str(level)]
+
+    spell['total_damage_scale'] = [total_damage(v) for _, v in spell['damage']['damage_at_slot_level'].items()]
+    spell['damage'] = f'{dice} of {damage_type} damage'
+    return spell
+
+def _concat_components(spell: dict) -> dict:
+    spell['components'] = ', '.join(spell['components'])
+    return spell
 
 def _calculate_range(spell: dict) -> dict:
     meters = round(int(spell['range'].split(' ')[0]) / FEET_CONSTANT, 2)

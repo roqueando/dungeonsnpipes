@@ -26,6 +26,15 @@ def should_description_be_transformed(batch):
 def should_range_be_transformed(batch):
     assert batch['squares'] == 18
 
+def should_components_be_transformed(batch):
+    assert batch['components'] == "V, S, M"
+
+def should_damage_be_transformed(batch):
+    assert batch['damage'] == '4d4 of Acid damage'
+    assert batch['total_damage_scale'] == [
+        16, 20, 24, 28, 32, 36, 40, 44
+    ]
+
 def test_transformation(monkeypatch):
     monkeypatch.setattr(requests, "get", request_mock.mock_get_spell_index)
     spells = __create_spell_response()
@@ -35,10 +44,15 @@ def test_transformation(monkeypatch):
     for batch in batches:
         result = transform.transform_description(batch)
         result = transform.transform_range(result)
+        result = transform.transform_components(result)
+        result = transform.transform_damage(result)
         solved_batches.append(result)
 
     first_result = solved_batches[0][0]
-    should_description_be_transformed(solved_batches[0][0])
+    should_description_be_transformed(first_result)
+    should_range_be_transformed(first_result)
+    should_components_be_transformed(first_result)
+    should_damage_be_transformed(first_result)
 
 
 def __create_spell_response() -> SpellResponse:
