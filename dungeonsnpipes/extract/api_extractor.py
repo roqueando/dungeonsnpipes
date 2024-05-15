@@ -32,8 +32,7 @@ def get_spells_from_api() -> SpellResponse:
         }
     }
     try:
-        response = requests.get(
-            "GET", f'{DND_API_BASE_URL}/spells',
+        response = requests.get(f'{DND_API_BASE_URL}/spells',
             headers=config['headers'], data=config['payload'])
         data = response.json()
         return SpellResponse(

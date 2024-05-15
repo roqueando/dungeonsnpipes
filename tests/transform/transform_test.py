@@ -19,15 +19,19 @@ def test_turning_into_batches(monkeypatch):
     assert len(first_batch.spells) == 10
     assert len(second_batch.spells) == 5
 
+
 def should_description_be_transformed(batch):
     assert batch['description'] == "A simple description\nMore description"
     assert batch['higher_level_description'] == "Higher level description\nMore description"
 
+
 def should_range_be_transformed(batch):
     assert batch['squares'] == 18
 
+
 def should_components_be_transformed(batch):
     assert batch['components'] == "V, S, M"
+
 
 def should_damage_be_transformed(batch):
     assert batch['damage'] == '4d4 of Acid damage'
@@ -35,24 +39,24 @@ def should_damage_be_transformed(batch):
         16, 20, 24, 28, 32, 36, 40, 44
     ]
 
-def test_transformation(monkeypatch):
+
+def test_transformer(monkeypatch):
     monkeypatch.setattr(requests, "get", request_mock.mock_get_spell_index)
     spells = __create_spell_response()
-
     batches = transform.turn_into_batches(spells)
-    solved_batches = []
+    solved = []
     for batch in batches:
-        result = transform.transform_description(batch)
-        result = transform.transform_range(result)
-        result = transform.transform_components(result)
-        result = transform.transform_damage(result)
-        solved_batches.append(result)
+        new_batch = transform.Transformer(batch=batch.spells) \
+            .apply(transform.transform_description) \
+            .apply(transform.transform_components) \
+            .apply(transform.transform_range) \
+            .apply(transform.transform_damage)
+        solved += new_batch.batch
 
-    first_result = solved_batches[0][0]
-    should_description_be_transformed(first_result)
-    should_range_be_transformed(first_result)
-    should_components_be_transformed(first_result)
-    should_damage_be_transformed(first_result)
+    should_description_be_transformed(solved[0])
+    should_range_be_transformed(solved[0])
+    should_components_be_transformed(solved[0])
+    should_damage_be_transformed(solved[0])
 
 
 def __create_spell_response() -> SpellResponse:
