@@ -17,3 +17,6 @@
 
 .venv
 /poetry.toml
+
+/postgres-db-volume
+/airflow-data
