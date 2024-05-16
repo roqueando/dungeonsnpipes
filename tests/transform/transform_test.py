@@ -11,6 +11,7 @@ def test_turning_into_batches(monkeypatch):
     monkeypatch.setattr(requests, "get", request_mock.mock_get_spells_batch)
     spells = api_extractor.get_spells_from_api()
 
+    transform.SpellBatch.MAX_SIZE = 10
     batches = transform.turn_into_batches(spells)
     first_batch = batches[0]
     second_batch = batches[1]
@@ -43,6 +44,7 @@ def should_damage_be_transformed(batch):
 def test_transformer(monkeypatch):
     monkeypatch.setattr(requests, "get", request_mock.mock_get_spell_index)
     spells = __create_spell_response()
+
     batches = transform.turn_into_batches(spells)
     solved = []
     for batch in batches:

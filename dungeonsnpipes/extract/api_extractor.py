@@ -11,10 +11,9 @@ class SpellResponse:
         self.count = count
         self.result = result
 
-
 def get_api_spell_index(index: str) -> dict:
     try:
-        response = requests.get("GET", f'{DND_API_BASE_URL}/spells/{index}',
+        response = requests.get(f'{DND_API_BASE_URL}/spells/{index}',
                                 headers={'Accept': 'application/json'}, data={})
         return response.json()
     except RequestException as e:

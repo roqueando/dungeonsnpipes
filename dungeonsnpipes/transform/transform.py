@@ -9,7 +9,7 @@ SQUARE_METERS = 1.5
 
 
 class SpellBatch:
-    MAX_SIZE = 10
+    MAX_SIZE = 30
 
     def __init__(self) -> None:
         self.spells: list[SpellResponse] = []
@@ -72,6 +72,11 @@ def _concat_descriptions(spell: dict) -> dict:
         raise Exception("Request goes wrong")
 
 def _flatten_damage(spell: dict) -> dict:
+    if not 'damage' in spell and not 'damage_at_slot_level' in spell:
+        spell['damage'] = 'No damage'
+        spell['total_damage_scale'] = []
+        return spell
+
     level = spell['level']
     damage_type = spell['damage']['damage_type']['name']
     dice = spell['damage']['damage_at_slot_level'][str(level)]
@@ -87,8 +92,15 @@ def _concat_components(spell: dict) -> dict:
     return spell
 
 def _calculate_range(spell: dict) -> dict:
-    meters = round(int(spell['range'].split(' ')[0]) / FEET_CONSTANT, 2)
-    spell['squares'] = math.floor(meters / SQUARE_METERS)
+    match spell['range']:
+        case 'Touch' | 'Self':
+            spell['squares'] = 1
+        case 'Special' | 'Sight' | 'Unlimited':
+            spell['squares'] = 999
+        case _:
+            meters = round(int(spell['range'].split(' ')[0]) / FEET_CONSTANT, 2)
+            spell['squares'] = math.floor(meters / SQUARE_METERS)
+
     del spell['range']
     return spell
 
