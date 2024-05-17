@@ -16,6 +16,7 @@
 .mypy_cache
 
 .venv
+/mage/venv
 /poetry.toml
 
 /postgres-db-volume

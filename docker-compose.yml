@@ -13,7 +13,7 @@ x-airflow-common:
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
   volumes:
-    - ./dungeonsnpipes/dags:/opt/airflow/dags
+    - ./airflow/dags:/opt/airflow/dags
     - ./airflow-data/config:/opt/airflow/config
     - ./airflow-data/logs:/opt/airflow/logs
     - ./airflow-data/plugins:/opt/airflow/plugins
@@ -26,6 +26,14 @@ x-airflow-common:
 
 
 services:
+  spells-extract:
+    build:
+      context: mage/
+      dockerfile: Dockerfile.spells-extract
+  spells-transform:
+    build:
+      context: mage/
+      dockerfile: Dockerfile.spells-transform
   postgres:
     image: postgres:latest
     environment:
