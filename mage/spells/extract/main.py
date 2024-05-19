@@ -15,8 +15,10 @@ def main():
         response = client.get_object("spells", "spells.json")
         if response:
             spells_json = json.loads(response.read())
+            print(spells_json.iter())
             for k, v in spells_json.iter():
                 if k == 'index':
+                    print(f'k: {k}')
                     spell = base.get_api_spell_index(v)
                     # get spell from index and save as {index-name}.json
         return 'spells.json'
