@@ -21,3 +21,5 @@
 
 /postgres-db-volume
 /airflow-data
+
+data*

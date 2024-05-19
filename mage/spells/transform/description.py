@@ -1,4 +1,16 @@
-from mage.spells.extract.base import get_api_spell_index
+import requests
+from requests import RequestException
+
+DND_API_BASE_URL = "https://www.dnd5eapi.co/api"
+
+
+def get_api_spell_index(index: str) -> dict:
+    try:
+        response = requests.get(f'{DND_API_BASE_URL}/spells/{index}',
+                                headers={'Accept': 'application/json'}, data={})
+        return response.json()
+    except RequestException as e:
+        raise SystemExit(e)
 
 
 def transform_description(batch: list) -> list:

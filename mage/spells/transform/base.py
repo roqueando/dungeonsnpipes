@@ -3,6 +3,8 @@ from typing import Callable
 
 FEET_CONSTANT = 3.2808
 SQUARE_METERS = 1.5
+ACCESS_KEY = '2w7Xan3d6L3gVumemkC3'
+SECRET_KEY = 'wpjikukgZYot8iFjf7UxpuMeElqbLWha1h74G5Tv'
 
 
 @dataclass

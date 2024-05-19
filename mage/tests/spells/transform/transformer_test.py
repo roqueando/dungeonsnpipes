@@ -1,12 +1,24 @@
-from .utils import create_spell_response
+# from .utils import create_spell_response
+import json
 import requests
 import tests.mocks.request_mock as request_mock
+from tests.mocks.spells_mock import get_spells_for_batch_mock
 import mage.spells.transform.batch as transform_batch
 import mage.spells.transform.base as base
 import mage.spells.transform.description as description
 import mage.spells.transform.components as components
 import mage.spells.transform.range as range
 import mage.spells.transform.damage as damage
+import mage.spells.transform.grouping as grouping
+
+
+def create_spell_response() -> dict:
+    batch_mock = json.loads(get_spells_for_batch_mock())
+    response = {
+        'count': batch_mock['count'],
+        'results': batch_mock['results'],
+    }
+    return response
 
 
 def test_transformer(monkeypatch):
@@ -21,13 +33,22 @@ def test_transformer(monkeypatch):
             .apply(description.transform_description) \
             .apply(components.transform_components) \
             .apply(range.transform_range) \
-            .apply(damage.transform_damage)
+            .apply(damage.transform_damage) \
+            .apply(grouping.group_by_level)
+
         solved += new_batch.batch
 
-    should_description_be_transformed(solved[0])
-    should_range_be_transformed(solved[0])
-    should_components_be_transformed(solved[0])
-    should_damage_be_transformed(solved[0])
+    should_group_by_level(solved[0])
+    should_description_be_transformed(solved[0][2][0])
+    should_range_be_transformed(solved[0][2][0])
+    should_components_be_transformed(solved[0][2][0])
+    should_damage_be_transformed(solved[0][2][0])
+
+
+def should_group_by_level(batch):
+    assert len(batch) == 1
+    assert 2 in batch
+    assert True == True
 
 
 def should_description_be_transformed(batch):

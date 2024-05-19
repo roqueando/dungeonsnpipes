@@ -1,7 +1,10 @@
 import requests
 from requests import RequestException
 
+ACCESS_KEY = '2w7Xan3d6L3gVumemkC3'
+SECRET_KEY = 'wpjikukgZYot8iFjf7UxpuMeElqbLWha1h74G5Tv'
 DND_API_BASE_URL = "https://www.dnd5eapi.co/api"
+
 
 def get_api_spell_index(index: str) -> dict:
     try:
@@ -10,6 +13,7 @@ def get_api_spell_index(index: str) -> dict:
         return response.json()
     except RequestException as e:
         raise SystemExit(e)
+
 
 def get_spells_from_api() -> dict:
     """
@@ -23,7 +27,7 @@ def get_spells_from_api() -> dict:
     }
     try:
         response = requests.get(f'{DND_API_BASE_URL}/spells',
-            headers=config['headers'], data=config['payload'])
+                                headers=config['headers'], data=config['payload'])
         data = response.json()
         return data
     except RequestException as e:

@@ -1,11 +1,12 @@
-import sys
-import os
-
 from datetime import timedelta
-from airflow.models.dag import DAG
+import json
 
-from airflow.operators.docker_operator import DockerOperator
+from airflow.models.dag import DAG
+from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.decorators import task
+from airflow.operators.bash import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+
 
 with DAG(
     "spells",
@@ -19,18 +20,25 @@ with DAG(
     },
     description="The Spells Ingestion DAG"
 ) as dag:
-    start_dag = DummyOperator(
-        task_id='start_dag'
-    )
+    start_dag = DummyOperator(task_id='start_dag')
     extract_task = DockerOperator(
         task_id='extract_spells',
-        image='dungeonsnpipes-spells-extract:latest',
+        image='roqueando/spells-extract:stable',
         container_name='spells-extract',
         docker_url="unix://var/run/docker.sock",
         api_version='auto',
+        xcom_all=True,
         auto_remove=True,
-        network_mode='bridge'
+        network_mode='dungeonsnpipes_default'
     )
-    start_dag >> extract_task
-    # spells = extract_batch_spells()
-    # batches = transform_batches(spells)
+    transform_test = DockerOperator(
+        task_id='transform_spells',
+        image='roqueando/spells-transform:stable',
+        container_name='spells-transform',
+        docker_url="unix://var/run/docker.sock",
+        api_version='auto',
+        auto_remove=True,
+        network_mode='dungeonsnpipes_default'
+    )
+
+    start_dag >> extract_task >> transform_test
