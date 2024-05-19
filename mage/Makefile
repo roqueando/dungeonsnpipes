@@ -1,3 +1,7 @@
+.PHONY: build test
+
 build:
-	@docker build -t roqueando/spells-extract:stable -f Dockerfile.spells-extract .
-	@docker build -t roqueando/spells-transform:stable -f Dockerfile.spells-transform .
+	@docker build -t roqueando/spells:stable -f Dockerfile.spells .
+
+test:
+	python -m pytest

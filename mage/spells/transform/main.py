@@ -1,12 +1,13 @@
+import itertools
 from minio import Minio
 import json
-import batch as transform_batch
-import base
-import description
-import components
-import range
-import damage
-import grouping
+from . import batch as transform_batch
+from . import base
+from . import description
+from . import components
+from . import range
+from . import damage
+from . import grouping
 from multiprocessing import Process
 
 
@@ -15,8 +16,8 @@ def transform_data(batch):
         .apply(description.transform_description) \
         .apply(components.transform_components) \
         .apply(range.transform_range) \
-        .apply(damage.transform_damage) \
-        .apply(grouping.group_by_level)
+        .apply(damage.transform_damage)
+    # .apply(grouping.group_by_level)
     # .apply(saving.save_to_parquet)
 
 
@@ -27,10 +28,18 @@ def main():
         response = client.get_object("spells", "spells.json")
         spells = json.loads(response.read())
         batches = transform_batch.turn_into_batches(spells)
+        new_batches = []
+        groups = []
         for batch in batches:
-            proc = Process(target=transform_data, args=(batch,))
-            proc.start()
-
+            new_batch = transform_data(batch=batch)
+            new_batches += new_batch
+            # proc = Process(target=transform_data, args=(batch,))
+            # proc.start()
+            # data = proc.join()
+            # print(data)
+        for k, g in itertools.groupby(new_batches, lambda x: x['level']):
+            groups.append({str(k): list(g)})
+        print(groups)
     except:
         raise Exception("spells.json not found")
 

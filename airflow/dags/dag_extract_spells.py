@@ -23,20 +23,22 @@ with DAG(
     start_dag = DummyOperator(task_id='start_dag')
     extract_task = DockerOperator(
         task_id='extract_spells',
-        image='roqueando/spells-extract:stable',
-        container_name='spells-extract',
+        image='roqueando/spells:stable',
+        container_name='spells',
         docker_url="unix://var/run/docker.sock",
         api_version='auto',
         xcom_all=True,
         auto_remove=True,
+        command="extract.main",
         network_mode='dungeonsnpipes_default'
     )
     transform_test = DockerOperator(
         task_id='transform_spells',
-        image='roqueando/spells-transform:stable',
-        container_name='spells-transform',
+        image='roqueando/spells:stable',
+        container_name='spells',
         docker_url="unix://var/run/docker.sock",
         api_version='auto',
+        command="transform.main",
         auto_remove=True,
         network_mode='dungeonsnpipes_default'
     )
