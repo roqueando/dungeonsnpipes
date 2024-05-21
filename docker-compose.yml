@@ -119,7 +119,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - 8080:8080
+      - 8081:8081
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -148,7 +148,43 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+  mariadb:
+    container_name: mariadb
+    hostname: mariadb
+    image: mariadb:10.5.8
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=metastore_db
 
+  trino:
+    container_name: trino
+    image: trinodb/trino:latest
+    hostname: trino
+    environment:
+      - TRINO_ENVIRONMENT=production
+    ports:
+      - 8080:8080
+    volumes:
+      - ./trino-data:/etc/trino
+
+  hive-metastore:
+    container_name: hive-metastore
+    hostname: hive-metastore
+    image: bitsondatadev/hive-metastore:latest
+    ports:
+      - 9083:9083
+    volumes:
+      - ./hive-data:/user/hive
+      - ./conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
+      - ./conf/core-site.xml:/opt/hadoop-3.3.4/etc/hadoop/core-site.xml
+    environment:
+      - METASTORE_DB_HOSTNAME=hive-metastore
+    depends_on:
+      - mariadb
 volumes:
   data1-1:
   data1-2:

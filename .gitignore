@@ -21,5 +21,6 @@
 
 /postgres-db-volume
 /airflow-data
+/trino-data
 
 data*
