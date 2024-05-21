@@ -6,5 +6,8 @@ run: build
 build:
 	@docker build -t roqueando/spells:stable -f Dockerfile.spells .
 
+test-spec:
+	python -m pytest -s -v -k $(spec)
+
 test:
-	python -m pytest
+	python -m pytest -s -v 

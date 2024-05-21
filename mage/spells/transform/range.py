@@ -2,11 +2,7 @@ import math
 from .base import FEET_CONSTANT, SQUARE_METERS
 
 
-def transform_range(batch: list) -> list:
-    return list(map(_calculate_range, batch))
-
-
-def _calculate_range(spell: dict) -> dict:
+def transform_range(spell: dict) -> dict:
     match spell['range']:
         case 'Touch' | 'Self':
             spell['squares'] = 1

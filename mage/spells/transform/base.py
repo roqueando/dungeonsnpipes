@@ -14,8 +14,8 @@ class SpellBatch:
 
 @dataclass
 class Transformer:
-    batch: list
+    spell: dict
 
     def apply(self, func: Callable):
-        self.batch = func(self.batch)
+        self.spell = func(self.spell)
         return self
