@@ -2,41 +2,41 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>s3a://minio1:9000</value>
+    </property>
 
-<!-- Minio properties -->
-<property>
-    <name>fs.s3a.path.style.access</name>
-    <value>true</value>
-</property>
 
-<property>
-    <name>fs.s3a.connection.ssl.enabled</name>
-    <value>false</value>
-</property>
+    <!-- Minio properties -->
+    <property>
+        <name>fs.s3a.connection.ssl.enabled</name>
+        <value>false</value>
+    </property>
 
-<property>
-    <name>fs.s3a.endpoint</name>
-    <value>http://minio1:9000</value>
-</property>
+    <property>
+        <name>fs.s3a.endpoint</name>
+        <value>http://minio1:9000</value>
+    </property>
 
-<property>
-    <name>fs.s3a.access.key</name>
-    <value>2w7Xan3d6L3gVumemkC3</value>
-</property>
+    <property>
+        <name>fs.s3a.access.key</name>
+        <value>2w7Xan3d6L3gVumemkC3</value>
+    </property>
 
-<property>
-    <name>fs.s3a.secret.key</name>
-    <value>wpjikukgZYot8iFjf7UxpuMeElqbLWha1h74G5Tv</value>
-</property>
+    <property>
+        <name>fs.s3a.secret.key</name>
+        <value>wpjikukgZYot8iFjf7UxpuMeElqbLWha1h74G5Tv</value>
+    </property>
 
-<property>
-    <name>fs.s3a.path.style.access</name>
-    <value>true</value>
-</property>
+    <property>
+        <name>fs.s3a.path.style.access</name>
+        <value>true</value>
+    </property>
 
-<property>
-    <name>fs.s3a.impl</name>
-    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
-</property>
+    <property>
+        <name>fs.s3a.impl</name>
+        <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+    </property>
 
 </configuration>

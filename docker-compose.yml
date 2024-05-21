@@ -174,15 +174,16 @@ services:
   hive-metastore:
     container_name: hive-metastore
     hostname: hive-metastore
-    image: bitsondatadev/hive-metastore:latest
+    image: 'sslhep/hive-metastore:3.1.3'
     ports:
       - 9083:9083
     volumes:
-      - ./hive-data:/user/hive
       - ./conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
       - ./conf/core-site.xml:/opt/hadoop-3.3.4/etc/hadoop/core-site.xml
     environment:
+      - SERVICE_NAME=metastore
       - METASTORE_DB_HOSTNAME=hive-metastore
+      - HADOOP_OPTIONAL_TOOLS=hadoop-aws
     depends_on:
       - mariadb
 volumes:

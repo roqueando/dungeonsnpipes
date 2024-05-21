@@ -44,16 +44,19 @@ def main():
 
     objects = client.list_objects("spells", prefix="indexes", recursive=True)
     processed_spells = list(map(transform_data, objects))
-    df = pd.DataFrame(processed_spells)
-    table = Table.from_pandas(df)
-    pq.write_to_dataset(
-        table,
-        "s3://spells/processed",
-        filesystem=minio,
-        use_dictionary=True,
-        compression="snappy",
-        version="2.6"
-    )
+    # TODO: group by itertools and save the group in your
+    #       respective processed level directory
+    # ==================================================
+    #df = pd.DataFrame(processed_spells)
+    #table = Table.from_pandas(df)
+    #pq.write_to_dataset(
+    #    table,
+    #    "s3://spells/processed",
+    #    filesystem=minio,
+    #    use_dictionary=True,
+    #    compression="snappy",
+    #    version="2.6"
+    #)
 
 
 
