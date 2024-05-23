@@ -10,4 +10,4 @@ test-spec:
 	python -m pytest -s -v -k $(spec)
 
 test:
-	python -m pytest -s -v 
+	python -m pytest -s -v
