@@ -1,30 +1,25 @@
 def transform_damage(spell: dict) -> dict:
-    if not 'damage' in spell:
-        spell['damage'] = 'No damage'
-        spell['total_damage_scale'] = []
-        return spell
-
-    if not 'damage_type' in spell['damage']:
-        damage_type = 'Neutral'
-    else:
-        damage_type = spell['damage']['damage_type']['name']
-
-    level = spell['level']
-    dice = ''
-
-    if 'damage_at_slot_level' in spell['damage']:
-        dice = spell['damage']['damage_at_slot_level'][str(level)]
-        spell['total_damage_scale'] = total_damage_at_scale(spell, 'damage_at_slot_level')
-        spell['damage'] = f'{dice} of {damage_type} damage'
-        return spell
-
-    if 'damage_at_character_level' in spell['damage']:
-        spell['total_damage_scale'] = total_damage_at_scale(spell, 'damage_at_character_level')
-        dice_list = [f'{level_dice}={spell_dice}' for level_dice, spell_dice in spell['damage']['damage_at_character_level'].items()]
-        spell['damage'] = f'{", ".join(dice_list)} of {damage_type} damage'
-        return spell
-
     return spell
+    #if not 'damage_type' in spell['damage']:
+    #    damage_type = 'Neutral'
+    #else:
+    #    damage_type = spell['damage']['damage_type']['name']
+
+    #level = spell['level']
+    #dice = ''
+
+    #if 'damage_at_slot_level' in spell['damage']:
+    #    dice = spell['damage']['damage_at_slot_level'][str(level)]
+    #    spell['total_damage_scale'] = total_damage_at_scale(spell, 'damage_at_slot_level')
+    #    spell['damage'] = f'{dice} of {damage_type} damage'
+    #    return spell
+
+    #if 'damage_at_character_level' in spell['damage']:
+    #    spell['total_damage_scale'] = total_damage_at_scale(spell, 'damage_at_character_level')
+    #    dice_list = [f'{level_dice}={spell_dice}' for level_dice, spell_dice in spell['damage']['damage_at_character_level'].items()]
+    #    spell['damage'] = f'{", ".join(dice_list)} of {damage_type} damage'
+    #    return spell
+
 
 
 def total_damage_at_scale(spell:dict, index: str) -> list[int]:

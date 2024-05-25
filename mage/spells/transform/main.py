@@ -9,7 +9,9 @@ from . import components
 from . import range as transform_range
 from . import damage
 from . import grouping
+from . import dropping
 from pyarrow import fs
+from pandas import DataFrame
 
 import os
 import minio
@@ -48,9 +50,9 @@ def transform_data(obj: Object) -> dict:
         .apply(description.transform_description) \
         .apply(components.transform_components) \
         .apply(transform_range.transform_range) \
-        .apply(damage.transform_damage)
+        .apply(damage.transform_damage) \
+        .apply(dropping.drop_unused)
     return processed.spell
-
 
 def main():
     print('transforming...')
@@ -58,26 +60,18 @@ def main():
     objects = client.list_objects("spells", prefix="indexes", recursive=True)
     processed_spells = list(map(transform_data, objects))
     grouped = grouping.group_by_level(processed_spells)
-
     for group in grouped:
         level = list(group.keys())[0]
         level_filename = f'level_{level}.parquet'
 
         try:
-            df = pq.read_table(f'spells/processed/{level_filename}', filesystem=minio_fs_pa) \
+            df = pq.read_table(f'spells/processed/level_{level}', filesystem=minio_fs_pa) \
                 .to_pandas()
             df2 = pd.DataFrame(group[level])
             df = pd.concat([df, df2])
-            from_pandas = pa.Table.from_pandas(df)
-
-            pq.write_table(from_pandas,
-                           f'spells/processed/{level_filename}',
-                           filesystem=minio_fs_pa)
-
-            # INFO: probably writing to dataset is more efficient or not? I'll try later
-            #pq.write_to_dataset(pa.Table.from_pandas(df),
-            #                    f"spells/processed/{level_filename}",
-            #                    filesystem=minio_fs_pa)
+            pq.write_to_dataset(pa.Table.from_pandas(df),
+                                f"spells/processed/level_{level}",
+                                filesystem=minio_fs_pa)
         except FileNotFoundError:
             save_level_group(level_filename, group)
 
