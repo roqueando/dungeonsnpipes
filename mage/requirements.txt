@@ -3,4 +3,3 @@ pytest==8.2.0
 minio==7.2.7
 pyarrow==16.1.0
 pandas==2.2.2
-s3fs==2024.5.0

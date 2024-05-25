@@ -6,6 +6,7 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.decorators import task
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.models import Variable
 
 
 with DAG(
@@ -21,6 +22,11 @@ with DAG(
     description="The Spells Ingestion DAG"
 ) as dag:
     start_dag = DummyOperator(task_id='start_dag')
+
+    minio_access_key = Variable.get("MINIO_ACCESS_KEY")
+    minio_secret_key = Variable.get("MINIO_SECRET_KEY")
+    minio_url = Variable.get("MINIO_URL")
+
     extract_task = DockerOperator(
         task_id='extract_spells',
         image='roqueando/spells:stable',
@@ -30,6 +36,11 @@ with DAG(
         xcom_all=True,
         auto_remove=True,
         command="extract.main",
+        environment={
+            'MINIO_ACCESS_KEY': minio_access_key,
+            'MINIO_SECRET_KEY': minio_secret_key,
+            'MINIO_URL': minio_url
+        },
         network_mode='dungeonsnpipes_default'
     )
     transform_test = DockerOperator(
@@ -40,6 +51,11 @@ with DAG(
         api_version='auto',
         command="transform.main",
         auto_remove=True,
+        environment={
+            'MINIO_ACCESS_KEY': minio_access_key,
+            'MINIO_SECRET_KEY': minio_secret_key,
+            'MINIO_URL': minio_url
+        },
         network_mode='dungeonsnpipes_default'
     )
 

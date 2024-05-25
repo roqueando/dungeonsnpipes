@@ -18,7 +18,7 @@ x-airflow-common:
     - ./airflow-data/logs:/opt/airflow/logs
     - ./airflow-data/plugins:/opt/airflow/plugins
     - ./airflow-data/airflow.cfg:/opt/airlfow/airflow.cfg
-    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - //var/run/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -37,8 +37,6 @@ services:
     volumes:
       - ./minio:/data
     command: server /data --console-address ":9001"
-    networks:
-      - trino-network
 
   postgres:
     image: postgres:latest

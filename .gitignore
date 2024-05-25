@@ -26,3 +26,4 @@
 /mysql
 
 data*
+.env
